@@ -11,6 +11,22 @@ OpenXR, or a headset. When the optional bridge is present, the app uses the
 OpenXR runtime selected by Windows (SteamVR can be that runtime) and does not
 need a Steam App ID or Steam distribution.
 
+## Production launchers
+
+The two supported Windows entrypoints are:
+
+- `Play-Windows.bat` — desktop voxel mode. It keeps the existing in-game
+  ROM/save/mod launcher and includes the ABOVE / 3RD / POV camera modes; press
+  `V` in-game to cycle them. It does not require SteamVR or OpenXR.
+- `Play-VR.bat` — headset mode. It checks the native `xrbridge.dll`, OpenXR
+  loader, SteamVR, and the active SteamVR runtime before starting the same
+  voxel build. It does not use Steam distribution or a Steam App ID.
+
+Both entrypoints resolve their paths relative to the workspace and run setup
+when the generated data or voxel-mod link is missing. The first desktop launch
+opens the same launcher used by the upstream Pokemon game, where the Red ROM
+and save slots remain managed.
+
 ## First run
 
 From PowerShell in this folder:
@@ -20,7 +36,8 @@ From PowerShell in this folder:
 ./play-vr.ps1
 ```
 
-For the one-click headset launch, double-click `launch-vr.bat`. It checks the
+For the one-click headset launch, double-click `Play-VR.bat` (or the older
+`launch-vr.bat` alias). It checks the
 ROM, generated data, LÖVE 11.5, SteamVR, and `xrbridge.dll`; runs setup when
 needed; selects SteamVR as the active Windows OpenXR runtime; adds SteamVR's
 loader directory; starts SteamVR; and launches the game. Selecting the runtime
@@ -42,14 +59,17 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\build-vrbridge.ps1
 
 The setup script validates the ROM, builds the private generated data, and
 links the voxel mod into the game. It does not copy the ROM into a release
-package. The first `play-vr.ps1` launch supplies that same ROM to the
-upstream importer when the fast setup has not yet built the full audio cache;
-the importer completes the runtime cache and then boots automatically.
+package. If the fast setup has not yet built the full audio cache, the VR
+launcher supplies the validated ROM to the upstream importer so it can finish
+the cache and boot automatically.
 
-To play flat-screen, use `gen1recomp/scripts/run.ps1` after setup. To enable
-the VR path explicitly, set `POKEPORT_VR=1`; if the native bridge is built,
-set `POKEPORT_XRBRIDGE` to its DLL path or place `xrbridge.dll` where LÖVE can
-load it.
+For normal desktop play, use `Play-Windows.bat`; it leaves the upstream
+interactive ROM, save-slot, and mod launcher in control. The lower-level
+`gen1recomp/scripts/run.ps1` entrypoint remains available for development.
+
+For diagnostics, use `Play-Windows.bat -CheckOnly` or
+`Play-VR.bat -CheckOnly`. `Play-VR.bat -DesktopPreview` exercises the VR
+composition without requiring a headset or native bridge.
 
 ## VR runtime
 

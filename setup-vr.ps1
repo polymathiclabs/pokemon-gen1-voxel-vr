@@ -53,4 +53,5 @@ if ($LASTEXITCODE -ne 0) { throw "The upstream setup failed with code $LASTEXITC
 
 Write-Host ''
 Write-Host 'Setup complete.' -ForegroundColor Green
-Write-Host 'Run .\play-vr.ps1 to start the VR-capable build.'
+Write-Host 'Run .\Play-Windows.bat for desktop ABOVE / 3RD / POV play.'
+Write-Host 'Run .\Play-VR.bat for the OpenXR / SteamVR headset build.'
