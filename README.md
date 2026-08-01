@@ -4,6 +4,15 @@ An unofficial Windows fan project that combines the [Gen1Recomp engine](https://
 
 The project adds a voxel overworld, above/third-person/first-person camera modes, controller support, staged battles, and optional head-tracked stereo VR. Desktop play does not require SteamVR or a headset.
 
+## Downloads
+
+Once the first GitHub release is published, these are the two end-user downloads:
+
+- [Download Desktop build](https://github.com/polymathiclabs/pokemon-red-voxel-vr/releases/latest/download/pokemon-red-voxel-desktop-latest.zip)
+- [Download VR build](https://github.com/polymathiclabs/pokemon-red-voxel-vr/releases/latest/download/pokemon-red-voxel-vr-latest.zip)
+
+The archives are intended to contain the runnable source build and launchers, but no Pokémon ROM, save files, generated ROM-derived data, or personal build cache. The VR archive additionally contains the matching native bridge; SteamVR and OpenXR remain system dependencies.
+
 > **Unofficial fan project — not affiliated with Nintendo, The Pokémon Company, Game Freak, Creatures, or any of their subsidiaries or partners.** Pokémon, Pokémon character names, artwork, music, and related trademarks are the property of their respective owners. This project is not endorsed, sponsored, or approved by any of them.
 
 ## Important legal and distribution rules
@@ -14,53 +23,32 @@ The project adds a voxel overworld, above/third-person/first-person camera modes
 - Keep the upstream copyright notices, licenses, history, and attribution when maintaining the engine or voxel-mod repositories.
 - Before making any repository public, review the upstream licenses and the terms for every third-party asset and dependency.
 
+The release archives are not “copyright-free”: source code and third-party dependencies remain copyrighted by their respective authors and must be distributed under their licenses. The important restriction is that the archives do not bundle the Pokémon ROM or unauthorized ROM-derived game content.
+
 ## Two supported modes
 
 | Mode | Requires | Launch |
 | --- | --- | --- |
-| Desktop voxel | Windows x64, Git, Python 3.10+, LÖVE 11.5, and a compatible ROM | `Play-Windows.bat` |
+| Desktop voxel | Windows x64, Python 3.10+, LÖVE 11.5, and a compatible ROM | `Play-Windows.bat` |
 | Headset VR | Everything in Desktop, plus Steam, SteamVR as the active Windows OpenXR runtime, a compatible headset connection, and matching x64 `xrbridge.dll` | `Play-VR.bat` |
 
 Desktop mode includes the normal upstream ROM/save/mod launcher. It does not start Steam, load OpenXR, or require a Steam App ID.
 
 VR mode uses SteamVR as a system OpenXR runtime. It is a standalone executable workflow, not a Steam Store release and not a Steamworks application. Quest headsets can connect through Virtual Desktop, Link, or Air Link, provided SteamVR sees the headset and SteamVR is the active OpenXR runtime.
 
-## Install from your GitHub repositories
-
-The commands below use these proposed names:
-
-- `polymathiclabs/pokemon-red-voxel-vr` — this integration repository;
-- `polymathiclabs/gen1recomp` — your private engine mirror/copy;
-- `polymathiclabs/DramaticShapeVoxelMod` — your private voxel-mod mirror/copy.
-
-Replace `polymathiclabs` or any repository name if you choose different names.
-
-For private repositories, authenticate Git first with Git Credential Manager, GitHub Desktop, or:
-
-```powershell
-gh auth login
-gh auth setup-git
-```
-
-Put your legally obtained ROM somewhere outside the repository, for example `C:/Games/Pokemon Red.gb`. The installer verifies it and never copies it into a release package.
-
 ### Desktop mode
 
-Install Git, Python 3.10+, and LÖVE 11.5 first. On Windows systems with `winget`:
+Install Python 3.10+ and LÖVE 11.5 first. On Windows systems with `winget`:
 
 ```powershell
-winget install --exact --id Git.Git
 winget install --exact --id Python.Python.3.12
 winget install --exact --id Love2d.Love2d
 ```
 
-Then download, install, and launch the desktop build:
+Then download and extract the Desktop archive. Place your legally obtained ROM next to the launcher, or keep it elsewhere and pass its path:
 
 ```powershell
-$Root = Join-Path $env:USERPROFILE 'Games/PokemonRedVoxelVR'
-git clone https://github.com/polymathiclabs/pokemon-red-voxel-vr.git $Root
-Set-Location $Root
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File ./install.ps1 -Mode Desktop -RomPath 'C:/Games/Pokemon Red.gb' -Launch
+./Play-Windows.bat -RomPath 'C:/Games/Pokemon Red.gb'
 ```
 
 The first run may take a few minutes while the private ROM-derived cache is built. Later launches can use `Play-Windows.bat` directly.
@@ -78,25 +66,26 @@ For an end-user release, place the matching x64 `xrbridge.dll` beside the root l
 
 The project helper can build the bridge after those prerequisites are installed. See [`gen1recomp/vrbridge/README.md`](gen1recomp/vrbridge/README.md).
 
-Download, install, and launch the VR build:
+Then download and extract the VR archive. Confirm that `xrbridge.dll` is beside the launcher, place your legally obtained ROM next to the launcher or pass its path, and run:
 
 ```powershell
-$Root = Join-Path $env:USERPROFILE 'Games/PokemonRedVoxelVR'
-git clone https://github.com/polymathiclabs/pokemon-red-voxel-vr.git $Root
-Set-Location $Root
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File ./install.ps1 -Mode VR -RomPath 'C:/Games/Pokemon Red.gb' -Launch
+./Play-VR.bat -RomPath 'C:/Games/Pokemon Red.gb'
 ```
 
-If you are developing the bridge instead of using a release binary:
-
-```powershell
-git clone --depth 1 https://github.com/KhronosGroup/OpenXR-SDK.git ./.vr-build/OpenXR-SDK
-git clone --depth 1 https://github.com/LuaJIT/LuaJIT.git ./.vr-build/LuaJIT
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File ./build-vrbridge.ps1 -OpenXrSdk (Resolve-Path ./.vr-build/OpenXR-SDK).Path -LuaJitRoot (Resolve-Path ./.vr-build/LuaJIT).Path
-./Play-VR.bat
-```
+If you are developing the bridge instead of using the release binary, use the native build prerequisites and instructions in [`gen1recomp/vrbridge/README.md`](gen1recomp/vrbridge/README.md).
 
 The VR launcher checks the ROM, generated data, LÖVE 11.5, the native bridge, the SteamVR OpenXR loader, and the active runtime before launching. It may request one normal Windows UAC approval when selecting SteamVR as the active runtime.
+
+## Maintainer release packaging
+
+After the three repositories are checked out together, the maintainer can create the two release archives with:
+
+```powershell
+./package-release.ps1 -Mode Desktop -Version latest
+./package-release.ps1 -Mode VR -Version latest -BridgePath './xrbridge.dll'
+```
+
+The packaging script archives tracked engine/mod files only and explicitly leaves out the ROM, generated ROM-derived data, saves, and local build products. The VR package requires a matching x64 `xrbridge.dll`; it does not package SteamVR or the OpenXR runtime.
 
 ## Controls and camera modes
 
@@ -124,7 +113,7 @@ Run these from the project root:
 pokemon-red-voxel-vr/        integration repository
 ├── gen1recomp/              engine repository, kept as its own Git history
 ├── DramaticShapeVoxelMod/   voxel-mod repository, kept as its own Git history
-├── install.ps1              dependency clone/cache preparation helper
+├── package-release.ps1      maintainer release-archive builder
 ├── Play-Windows.bat         desktop production launcher
 └── Play-VR.bat              SteamVR/OpenXR production launcher
 ```
