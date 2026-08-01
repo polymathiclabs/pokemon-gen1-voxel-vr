@@ -59,6 +59,9 @@ not launch through Steam. The voxel overworld uses true head-tracked stereo.
 Intro, menus, battles, and other non-voxel screens use a monoscopic full-frame
 fallback copied to both eyes, with the existing keyboard and gamepad controls
 retained as a fallback.
+OpenXR controller actions are also mapped into the normal Game Boy input:
+thumbstick movement, A/B, START (the left menu button), and SELECT (thumbstick
+click). Oculus Touch works through Virtual Desktop without hand tracking.
 The ordinary game window remains a single monoscopic desktop mirror; a
 side-by-side eye preview is a SteamVR "Display VR View" debug feature, not a
 requirement for headset rendering. The headset launcher enables a small
