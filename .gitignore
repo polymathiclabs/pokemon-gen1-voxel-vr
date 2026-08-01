@@ -1,0 +1,10 @@
+# The two project repositories are versioned independently below this
+# integration workspace.
+/gen1recomp/
+/DramaticShapeVoxelMod/
+
+# Local ROM and generated/native launch products.
+/Pokemon Red.gb
+/xrbridge.dll
+/.vr-build/
+/.vr-shots/
