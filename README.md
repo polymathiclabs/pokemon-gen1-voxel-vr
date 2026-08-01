@@ -61,6 +61,9 @@ fallback copied to both eyes, with the existing keyboard and gamepad controls
 retained as a fallback.
 OpenXR controller actions are also mapped into the normal Game Boy input:
 thumbstick movement, right A/B, left X for START, and left Y for SELECT.
+Click either thumbstick to recenter the seated view on the character; the
+headset's physical translation is kept inside a small collision-safe envelope
+while rotation remains unrestricted.
 Oculus Touch works through Virtual Desktop without hand tracking.
 The ordinary game window remains a single monoscopic desktop mirror; a
 side-by-side eye preview is a SteamVR "Display VR View" debug feature, not a
