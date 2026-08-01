@@ -71,7 +71,7 @@ if (Test-Path -LiteralPath $archive) {
 New-Item -ItemType Directory -Path $package -Force | Out-Null
 try {
     foreach ($file in @(
-        'README.md', 'Play-Windows.bat', 'Play-VR.bat',
+        'README.md', 'rom-info.ps1', 'Play-Windows.bat', 'Play-VR.bat',
         'launch-desktop.ps1', 'launch-vr.ps1', 'play-vr.ps1',
         'setup-vr.ps1', 'set-steamvr-openxr.ps1', 'build-vrbridge.ps1'
     )) {

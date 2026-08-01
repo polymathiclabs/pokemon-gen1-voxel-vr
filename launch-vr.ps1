@@ -20,7 +20,7 @@ $Root = $PSScriptRoot
 $Game = Join-Path $Root 'gen1recomp'
 $SetupScript = Join-Path $Root 'setup-vr.ps1'
 $PlayScript = Join-Path $Root 'play-vr.ps1'
-if (-not $RomPath) { $RomPath = Join-Path $Root 'Pokemon Red.gb' }
+$RomInfoScript = Join-Path $Root 'rom-info.ps1'
 
 function Stop-Launcher([string]$Message) {
     Write-Host ''
@@ -64,6 +64,24 @@ function Get-LoveVersion([string]$Path) {
         $version = (Get-Item -LiteralPath $Path).VersionInfo.ProductVersion
     }
     return $version
+}
+
+function Test-VoxelModLink {
+    $linkPath = Join-Path $Game 'mods\DramaticShapeVoxelMod'
+    if (-not (Test-Path -LiteralPath $linkPath)) { return $false }
+    try {
+        $item = Get-Item -LiteralPath $linkPath -Force
+        if (-not ($item.Attributes -band [IO.FileAttributes]::ReparsePoint)) {
+            return $false
+        }
+        $linkTarget = @($item.Target) | Select-Object -First 1
+        if (-not $linkTarget) { return $false }
+        $resolvedLink = (Resolve-Path -LiteralPath $linkTarget).Path
+        $resolvedMod = (Resolve-Path -LiteralPath (Join-Path $Root 'DramaticShapeVoxelMod')).Path
+        return $resolvedLink.TrimEnd('\') -eq $resolvedMod.TrimEnd('\')
+    } catch {
+        return $false
+    }
 }
 
 function Get-SteamRoots {
@@ -144,29 +162,28 @@ if (-not (Test-Path -LiteralPath $SetupScript -PathType Leaf)) {
 if (-not (Test-Path -LiteralPath $PlayScript -PathType Leaf)) {
     Stop-Launcher 'play-vr.ps1 is missing.'
 }
-if (-not (Test-Path -LiteralPath $RomPath -PathType Leaf)) {
-    Stop-Launcher "ROM not found: $RomPath"
+if (-not (Test-Path -LiteralPath $RomInfoScript -PathType Leaf)) {
+    Stop-Launcher 'rom-info.ps1 is missing.'
 }
 
-$RomPath = (Resolve-Path -LiteralPath $RomPath).Path
-$romHash = (Get-FileHash -Algorithm SHA1 -LiteralPath $RomPath).Hash.ToLowerInvariant()
-if ($romHash -ne 'ea9bcae617fdf159b045185467ae58b2e4a48b9a') {
-    Stop-Launcher "unsupported ROM SHA-1: $romHash. Supply the canonical US Pokemon Red 1.0 ROM."
-}
+. $RomInfoScript
+try { $RomInfo = Get-PokemonRomInfo -Path $RomPath -SearchRoot $Root }
+catch { Stop-Launcher $_.Exception.Message }
+$RomPath = $RomInfo.Path
 
 $LoveBin = Find-Love
-$maps = Join-Path $Game 'data\generated\maps.lua'
-if ((-not $SkipSetup) -and ((-not (Test-Path -LiteralPath $maps -PathType Leaf)) -or (-not $LoveBin))) {
-    Write-Host 'Preparing generated game data and checking LOVE 11.5...' -ForegroundColor Cyan
+$needsSetup = (-not $LoveBin) -or (-not (Test-VoxelModLink))
+if ((-not $SkipSetup) -and $needsSetup) {
+    Write-Host 'Preparing LOVE 11.5 and the voxel mod...' -ForegroundColor Cyan
     Invoke-ProjectScript $SetupScript @('-RomPath', $RomPath)
     $LoveBin = Find-Love
 }
 
-if (-not (Test-Path -LiteralPath $maps -PathType Leaf)) {
-    Stop-Launcher 'generated game data is missing. Run setup-vr.ps1 or remove -SkipSetup.'
-}
 if (-not $LoveBin) {
     Stop-Launcher 'LOVE 11.5 was not found. Run setup-vr.ps1 or install LOVE 11.5.'
+}
+if (-not (Test-VoxelModLink)) {
+    Stop-Launcher 'the voxel mod junction is missing or points at the wrong folder. Run setup-vr.ps1.'
 }
 $loveVersion = Get-LoveVersion $LoveBin
 if ($loveVersion -notmatch '11\.5') {
@@ -233,7 +250,7 @@ if (-not $DesktopPreview) {
     $activeRuntime = Get-ActiveOpenXRRuntime
     if ($CheckOnly) {
         Write-Host "LOVE:       $LoveBin ($loveVersion)" -ForegroundColor Green
-        Write-Host "ROM:        $RomPath (canonical)" -ForegroundColor Green
+        Write-Host "ROM:        $RomPath ($($RomInfo.DisplayName), canonical)" -ForegroundColor Green
         Write-Host "Bridge:     $(if ($BridgePath) { $BridgePath } else { '<missing>' })" -ForegroundColor $(if ($BridgePath) { 'Green' } else { 'Yellow' })
         Write-Host "SteamVR:    $VrMonitor" -ForegroundColor Green
         $runtimeReady = Test-SteamRuntime $activeRuntime $SteamXrJson
@@ -269,7 +286,7 @@ if (-not $DesktopPreview) {
     }
 } elseif ($CheckOnly) {
     Write-Host "LOVE:       $LoveBin ($loveVersion)" -ForegroundColor Green
-    Write-Host "ROM:        $RomPath (canonical)" -ForegroundColor Green
+    Write-Host "ROM:        $RomPath ($($RomInfo.DisplayName), canonical)" -ForegroundColor Green
     Write-Host 'Mode:       desktop preview' -ForegroundColor Green
     Write-Host "Bridge:     $(if ($BridgePath) { $BridgePath } else { '<not used>' })" -ForegroundColor Green
     exit 0
@@ -277,7 +294,7 @@ if (-not $DesktopPreview) {
 
 if ($CheckOnly) {
     Write-Host "LOVE:       $LoveBin ($loveVersion)" -ForegroundColor Green
-    Write-Host "ROM:        $RomPath (canonical)" -ForegroundColor Green
+    Write-Host "ROM:        $RomPath ($($RomInfo.DisplayName), canonical)" -ForegroundColor Green
     Write-Host "Bridge:     $BridgePath" -ForegroundColor Green
     exit 0
 }
@@ -317,9 +334,11 @@ if (-not $DesktopPreview) {
 $env:POKEPORT_VR = '1'
 $env:POKEPORT_VR_REQUIRED = if ($DesktopPreview) { '0' } else { '1' }
 $env:POKEPORT_VR_DIAGNOSTIC = if ($DesktopPreview) { '0' } else { '1' }
+$env:POKEPORT_VERSION = $RomInfo.Id
+$env:POKEPORT_IMPORT_ROM = $RomPath
 if ($BridgePath) { $env:POKEPORT_XRBRIDGE = $BridgePath }
 
 $playArguments = @('-RomPath', $RomPath)
 if ($BridgePath) { $playArguments += @('-XrBridge', $BridgePath) }
-Write-Host 'Launching the Pokemon Red voxel build...' -ForegroundColor Green
+Write-Host "Launching the $($RomInfo.DisplayName) voxel build..." -ForegroundColor Green
 Invoke-ProjectScript $PlayScript $playArguments

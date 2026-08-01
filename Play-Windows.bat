@@ -1,6 +1,6 @@
 @echo off
 setlocal
-title Pokemon Red Voxel - Desktop
+title Pokemon Red Blue Yellow Voxel - Desktop
 cd /d "%~dp0"
 
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%~dp0launch-desktop.ps1" %*

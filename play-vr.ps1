@@ -2,34 +2,26 @@
 
 param(
     [string]$XrBridge = $env:POKEPORT_XRBRIDGE,
-    [string]$RomPath = (Join-Path $PSScriptRoot 'Pokemon Red.gb')
+    [string]$RomPath
 )
 
 $ErrorActionPreference = 'Stop'
-$Game = Join-Path $PSScriptRoot 'gen1recomp'
+$Root = $PSScriptRoot
+$Game = Join-Path $Root 'gen1recomp'
+$RomInfoScript = Join-Path $Root 'rom-info.ps1'
 
-if (-not (Test-Path -LiteralPath (Join-Path $Game 'data\generated\maps.lua'))) {
-    throw 'Generated data is missing. Run .\setup-vr.ps1 first.'
+if (-not (Test-Path -LiteralPath $RomInfoScript -PathType Leaf)) {
+    throw 'rom-info.ps1 is missing.'
 }
-if (-not (Test-Path -LiteralPath $RomPath -PathType Leaf)) {
-    throw "ROM not found: $RomPath"
-}
+. $RomInfoScript
+$RomInfo = Get-PokemonRomInfo -Path $RomPath -SearchRoot $Root
+$RomPath = $RomInfo.Path
 
 $env:POKEPORT_VR = '1'
 $env:POKEPORT_VR_DIAGNOSTIC = '1'
-$RomPath = (Resolve-Path -LiteralPath $RomPath).Path
-$sha1 = (Get-FileHash -Algorithm SHA1 -LiteralPath $RomPath).Hash.ToLowerInvariant()
-if ($sha1 -ne 'ea9bcae617fdf159b045185467ae58b2e4a48b9a') {
-    throw "Unsupported ROM SHA-1: $sha1. Supply the canonical US Pokémon Red 1.0 ROM."
-}
+$env:POKEPORT_VERSION = $RomInfo.Id
+$env:POKEPORT_IMPORT_ROM = $RomPath
 
-# The fast source-tree builder intentionally omits the full audio program
-# pack. On the first launch, hand the same validated ROM to the upstream
-# importer so it can complete the cache and boot automatically instead of
-# stopping at the interactive ROM selector.
-if (-not (Test-Path -LiteralPath (Join-Path $Game 'assets\generated\audio\programs.bin'))) {
-    $env:POKEPORT_IMPORT_ROM = $RomPath
-}
 if ($XrBridge) {
     if (-not (Test-Path -LiteralPath $XrBridge -PathType Leaf)) {
         throw "OpenXR bridge DLL not found: $XrBridge"
@@ -37,9 +29,13 @@ if ($XrBridge) {
     $env:POKEPORT_XRBRIDGE = (Resolve-Path -LiteralPath $XrBridge).Path
 }
 
+$runScript = Join-Path $Game 'scripts\run.ps1'
+if (-not (Test-Path -LiteralPath $runScript -PathType Leaf)) {
+    throw 'gen1recomp/scripts/run.ps1 is missing.'
+}
+
 $runArgs = @(
-    '-NoProfile', '-ExecutionPolicy', 'Bypass', '-File',
-    (Join-Path $Game 'scripts\run.ps1')
+    '-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', $runScript
 )
 & powershell @runArgs
 if ($LASTEXITCODE -ne 0) { throw "The game exited with code $LASTEXITCODE." }

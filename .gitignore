@@ -4,7 +4,8 @@
 /DramaticShapeVoxelMod/
 
 # Local ROM and generated/native launch products.
-/Pokemon Red.gb
+/*.gb
+/*.gbc
 /xrbridge.dll
 /.vr-build/
 /.vr-shots/

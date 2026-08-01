@@ -1,8 +1,7 @@
 # Production desktop launcher for the voxel build.
 #
-# This follows the upstream game's Windows bootstrap pattern, but prepares the
-# sibling voxel mod first and explicitly disables the optional VR bridge. The
-# game itself still opens its normal ROM/save/mod launcher.
+# This prepares the sibling voxel mod, selects Red/Blue/Yellow from the ROM,
+# and explicitly disables the optional VR bridge.
 
 [CmdletBinding()]
 param(
@@ -16,7 +15,8 @@ $Root = $PSScriptRoot
 $Game = Join-Path $Root 'gen1recomp'
 $Mod = Join-Path $Root 'DramaticShapeVoxelMod'
 $SetupScript = Join-Path $Root 'setup-vr.ps1'
-if (-not $RomPath) { $RomPath = Join-Path $Root 'Pokemon Red.gb' }
+$RunScript = Join-Path $Game 'scripts\run.ps1'
+$RomInfoScript = Join-Path $Root 'rom-info.ps1'
 
 function Stop-Launcher([string]$Message) {
     Write-Host ''
@@ -82,24 +82,23 @@ if (-not (Test-Path -LiteralPath $Mod -PathType Container)) {
 if (-not (Test-Path -LiteralPath $SetupScript -PathType Leaf)) {
     Stop-Launcher 'setup-vr.ps1 is missing.'
 }
-if (-not (Test-Path -LiteralPath $RomPath -PathType Leaf)) {
-    Stop-Launcher "ROM not found: $RomPath"
+if (-not (Test-Path -LiteralPath $RunScript -PathType Leaf)) {
+    Stop-Launcher 'gen1recomp/scripts/run.ps1 is missing.'
+}
+if (-not (Test-Path -LiteralPath $RomInfoScript -PathType Leaf)) {
+    Stop-Launcher 'rom-info.ps1 is missing.'
 }
 
-$RomPath = (Resolve-Path -LiteralPath $RomPath).Path
-$romHash = (Get-FileHash -Algorithm SHA1 -LiteralPath $RomPath).Hash.ToLowerInvariant()
-if ($romHash -ne 'ea9bcae617fdf159b045185467ae58b2e4a48b9a') {
-    Stop-Launcher "unsupported ROM SHA-1: $romHash. Supply the canonical US Pokemon Red 1.0 ROM."
-}
+. $RomInfoScript
+try { $RomInfo = Get-PokemonRomInfo -Path $RomPath -SearchRoot $Root }
+catch { Stop-Launcher $_.Exception.Message }
+$RomPath = $RomInfo.Path
 
-$maps = Join-Path $Game 'data\generated\maps.lua'
 $LoveBin = Find-Love
-$needsSetup = (-not (Test-Path -LiteralPath $maps -PathType Leaf)) -or `
-              (-not $LoveBin) -or `
-              (-not (Test-VoxelModLink))
+$needsSetup = (-not $LoveBin) -or (-not (Test-VoxelModLink))
 
 if (-not $SkipSetup -and $needsSetup) {
-    Write-Host 'Preparing generated game data, LOVE 11.5, and the voxel mod...' -ForegroundColor Cyan
+    Write-Host 'Preparing LOVE 11.5 and the voxel mod...' -ForegroundColor Cyan
     & powershell.exe -NoProfile -ExecutionPolicy Bypass -File $SetupScript -RomPath $RomPath
     if ($LASTEXITCODE -ne 0) {
         Stop-Launcher "setup-vr.ps1 exited with code $LASTEXITCODE."
@@ -107,9 +106,6 @@ if (-not $SkipSetup -and $needsSetup) {
     $LoveBin = Find-Love
 }
 
-if (-not (Test-Path -LiteralPath $maps -PathType Leaf)) {
-    Stop-Launcher 'generated game data is missing. Run setup-vr.ps1 or remove -SkipSetup.'
-}
 if (-not (Test-VoxelModLink)) {
     Stop-Launcher 'the voxel mod junction is missing or points at the wrong folder. Run setup-vr.ps1.'
 }
@@ -123,10 +119,10 @@ if ($loveVersion -notmatch '11\.5') {
 
 if ($CheckOnly) {
     Write-Host "LOVE:       $LoveBin ($loveVersion)" -ForegroundColor Green
-    Write-Host "ROM:        $RomPath (canonical)" -ForegroundColor Green
+    Write-Host "ROM:        $RomPath ($($RomInfo.DisplayName), canonical)" -ForegroundColor Green
     Write-Host "Voxel mod:  $Mod" -ForegroundColor Green
     Write-Host 'Mode:       desktop first-/third-person voxel build' -ForegroundColor Green
-    Write-Host 'Launcher:   upstream in-game ROM/save/mod launcher' -ForegroundColor Green
+    Write-Host 'Launcher:   versioned ROM importer and voxel build' -ForegroundColor Green
     exit 0
 }
 
@@ -135,15 +131,10 @@ if ($CheckOnly) {
 $env:POKEPORT_VR = '0'
 $env:POKEPORT_VR_REQUIRED = '0'
 $env:POKEPORT_VR_DIAGNOSTIC = '0'
+$env:POKEPORT_VERSION = $RomInfo.Id
+$env:POKEPORT_IMPORT_ROM = $RomPath
 Remove-Item Env:POKEPORT_XRBRIDGE -ErrorAction SilentlyContinue
-Remove-Item Env:POKEPORT_IMPORT_ROM -ErrorAction SilentlyContinue
 
-$upstreamLauncher = Join-Path $Game 'Play-Windows.bat'
-if (-not (Test-Path -LiteralPath $upstreamLauncher -PathType Leaf)) {
-    Stop-Launcher 'gen1recomp/Play-Windows.bat is missing.'
-}
-
-Write-Host 'Launching the desktop Pokemon Red voxel build...' -ForegroundColor Green
-$env:ROM_PATH = $RomPath
-& $upstreamLauncher
+Write-Host "Launching the desktop $($RomInfo.DisplayName) voxel build..." -ForegroundColor Green
+& powershell.exe -NoProfile -ExecutionPolicy Bypass -File $RunScript
 exit $LASTEXITCODE
