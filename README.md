@@ -39,6 +39,15 @@ The launcher starts or checks SteamVR, validates the native bridge, and launches
 
 The VR build opens an 800x600 resizable PC mirror by default. The mirror shows the completed left-eye view fitted inside the window, without changing the headset eye resolution. Set `POKEPORT_VR_MIRROR_WIDTH` and `POKEPORT_VR_MIRROR_HEIGHT` before launching to choose another mirror size.
 
+## Running from source
+
+The downloadable archives already contain the required engine and voxel mod. A source checkout also needs these two repositories placed beside the integration project:
+
+- [Polymatic Labs Gen1Recomp fork](https://github.com/polymathiclabs/gen1recomp) in `gen1recomp`
+- [Polymatic Labs Dramatic Shape Voxel Mod fork](https://github.com/polymathiclabs/DramaticShapeVoxelMod) in `DramaticShapeVoxelMod`
+
+The root launchers and `install.ps1` use those forks by default. You still need LÖVE 11.5 and your own legally obtained compatible ROM. SteamVR and the active OpenXR runtime are also required for source VR launches.
+
 ## Controls and camera modes
 
 - Press `V` to cycle ABOVE -> 3RD -> POV.
