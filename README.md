@@ -59,7 +59,7 @@ The VR build opens an 800x600 resizable PC mirror by default. The mirror shows t
 This is an unofficial fan-made technical project. It is not affiliated with, endorsed by, sponsored by, or approved by Nintendo, The Pokemon Company, Game Freak, Creatures, or any of their subsidiaries or partners. Pokemon, Pokemon character names, artwork, music, and related trademarks belong to their respective owners.
 
 - You must provide your own legally obtained compatible ROM. This project does not distribute or download ROMs, save data, or ROM-derived generated data.
-- Do not upload a ROM, save file, generated game data, `xrbridge.dll`, or personal build products to this repository or its releases.
+- Do not upload a ROM, save file, generated game data, or personal build products to this repository or its releases. The VR archive may include the project's matching x64 `xrbridge.dll`; it does not include SteamVR or the OpenXR runtime.
 - The root integration scripts are MIT-licensed; see [`LICENSE`](LICENSE) and [`THIRD-PARTY-NOTICES.md`](THIRD-PARTY-NOTICES.md).
 - Preserve the licenses and attribution of the upstream engine, voxel mod, and all third-party dependencies.
 - The release archives and source code remain subject to their respective authors' copyrights and licenses.
