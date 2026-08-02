@@ -6,6 +6,10 @@
 # Local ROM and generated/native launch products.
 /*.gb
 /*.gbc
+/*.sav
+/*.love
+/*.exe
+/*.zip
 /xrbridge.dll
 /.vr-build/
 /.vr-shots/

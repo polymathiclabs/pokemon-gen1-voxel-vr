@@ -1,0 +1,5 @@
+* text=auto
+*.bat text eol=crlf
+*.gb binary
+*.gbc binary
+*.dll binary

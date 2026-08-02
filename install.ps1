@@ -12,6 +12,8 @@ param(
     [string]$VoxelRepo = 'DramaticShapeVoxelMod',
     [string]$EngineUrl,
     [string]$VoxelUrl,
+    [string]$EngineRef,
+    [string]$VoxelRef,
     [switch]$SkipSetup,
     [switch]$Launch
 )
@@ -47,6 +49,18 @@ function Ensure-Repo([string]$Name, [string]$Url, [string]$Path) {
     Invoke-Git @('clone', '--origin', 'origin', $Url, $Path)
 }
 
+function Checkout-Ref([string]$Name, [string]$Path, [string]$Ref) {
+    if (-not $Ref) { return }
+
+    $dirty = & git -C $Path status --porcelain
+    if ($dirty) {
+        Stop-Install "$Name has uncommitted changes; cannot select the requested release ref '$Ref'."
+    }
+
+    Write-Host "Selecting $Name ref $Ref..." -ForegroundColor Cyan
+    Invoke-Git @('-C', $Path, 'checkout', '--detach', $Ref)
+}
+
 if (-not (Get-Command git -ErrorAction SilentlyContinue)) {
     Stop-Install 'Git is required. Install Git for Windows and run this again.'
 }
@@ -60,6 +74,8 @@ if (-not $VoxelUrl) { $VoxelUrl = "https://github.com/$Owner/$VoxelRepo.git" }
 
 Ensure-Repo 'Gen1Recomp' $EngineUrl $Game
 Ensure-Repo 'Dramatic Shape Voxel Mod' $VoxelUrl $Mod
+Checkout-Ref 'Gen1Recomp' $Game $EngineRef
+Checkout-Ref 'Dramatic Shape Voxel Mod' $Mod $VoxelRef
 
 if (-not $SkipSetup) {
     $setup = Join-Path $Root 'setup-vr.ps1'
