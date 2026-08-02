@@ -23,7 +23,7 @@ The archives contain the runnable project and launchers, but no ROM, save files,
 - Keep upstream copyright notices, licenses, history, and attribution when maintaining the engine or voxel-mod repositories.
 - Before making any repository public, review the upstream licenses and the terms for every third-party asset and dependency.
 - The root integration scripts are MIT-licensed; see [`LICENSE`](LICENSE) and [`THIRD-PARTY-NOTICES.md`](THIRD-PARTY-NOTICES.md).
-- The engine keeps its own MIT license and copyright notice. The voxel-mod snapshot has no blanket upstream license; its original material must not be redistributed publicly until the author grants permission or adds an explicit license. The MIT notice for Polymatic Labs' changes is in [`DramaticShapeVoxelMod/LICENSE-POLYMATIC-LABS.md`](DramaticShapeVoxelMod/LICENSE-POLYMATIC-LABS.md).
+- The engine keeps its own MIT license and copyright notice. The voxel-mod snapshot has no blanket upstream license; its original material must not be redistributed publicly until the author grants permission or adds an explicit license. The MIT notice for Polymatic Labs' changes is in [`DramaticShapeVoxelMod/LICENSE-POLYMATIC-LABS.md`](https://github.com/polymathiclabs/DramaticShapeVoxelMod/blob/main/LICENSE-POLYMATIC-LABS.md).
 
 The release archives are not "copyright-free": source code and third-party dependencies remain copyrighted by their respective authors and must be distributed under their licenses.
 
@@ -124,7 +124,7 @@ workflow, but players do not need Git when using a release archive.
   -EngineUrl 'https://github.com/polymathiclabs/gen1recomp.git' `
   -VoxelUrl 'https://github.com/polymathiclabs/DramaticShapeVoxelMod.git' `
   -EngineRef '3d684534ec03dfedbfe707c5a5c108ae162600cb' `
-  -VoxelRef 'c7679654431dc4c7db0e37852d3cd2b9dfe0d72c'
+  -VoxelRef 'b5559dc810c5297dcef10c439a889e28d5b5be56'
 ```
 
 Use `-Mode VR` for the headset setup. Record the exact clean nested checkout

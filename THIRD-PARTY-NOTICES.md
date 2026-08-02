@@ -13,8 +13,9 @@ are available under the MIT License in [`LICENSE`](LICENSE).
 
 The engine is maintained as a separate repository in `gen1recomp`. Its source
 license is the MIT License, with the copyright notice for BOIS CLUB GAMES, LLC,
-in [`gen1recomp/LICENSE.MD`](gen1recomp/LICENSE.MD). Keep that notice with any
-copy of the engine and with release archives that contain engine code.
+in [`gen1recomp/LICENSE.MD`](https://github.com/polymathiclabs/gen1recomp/blob/main/LICENSE.MD).
+Keep that notice with any copy of the engine and with release archives that
+contain engine code.
 
 The optional `xrbridge.dll` is built from the engine's `vrbridge` source. The
 bridge dynamically loads the user's installed OpenXR loader and does not bundle
@@ -26,7 +27,7 @@ The voxel mod is maintained as a separate repository in
 `DramaticShapeVoxelMod`. Its upstream snapshot did not contain an explicit
 license file. Original code and assets remain attributed to DramaticShape and
 are not automatically relicensed by this integration repository. The MIT
-license in `DramaticShapeVoxelMod/LICENSE-POLYMATIC-LABS.md` applies only to changes
+license in [`DramaticShapeVoxelMod/LICENSE-POLYMATIC-LABS.md`](https://github.com/polymathiclabs/DramaticShapeVoxelMod/blob/main/LICENSE-POLYMATIC-LABS.md) applies only to changes
 authored by Polymatic Labs.
 
 Obtain written permission or an explicit upstream license before publishing a
