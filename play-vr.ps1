@@ -2,7 +2,8 @@
 
 param(
     [string]$XrBridge = $env:POKEPORT_XRBRIDGE,
-    [string]$RomPath
+    [string]$RomPath,
+    [switch]$Diagnostic
 )
 
 $ErrorActionPreference = 'Stop'
@@ -18,7 +19,7 @@ $RomInfo = Get-PokemonRomInfo -Path $RomPath -SearchRoot $Root
 $RomPath = $RomInfo.Path
 
 $env:POKEPORT_VR = '1'
-$env:POKEPORT_VR_DIAGNOSTIC = '1'
+$env:POKEPORT_VR_DIAGNOSTIC = if ($Diagnostic) { '1' } else { '0' }
 $env:POKEPORT_VERSION = $RomInfo.Id
 $env:POKEPORT_IMPORT_ROM = $RomPath
 

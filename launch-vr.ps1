@@ -12,7 +12,8 @@ param(
     [switch]$SkipSteamVR,
     [switch]$NoRuntimeSwitch,
     [switch]$CheckOnly,
-    [switch]$DesktopPreview
+    [switch]$DesktopPreview,
+    [switch]$Diagnostic
 )
 
 $ErrorActionPreference = 'Stop'
@@ -333,12 +334,13 @@ if (-not $DesktopPreview) {
 
 $env:POKEPORT_VR = '1'
 $env:POKEPORT_VR_REQUIRED = if ($DesktopPreview) { '0' } else { '1' }
-$env:POKEPORT_VR_DIAGNOSTIC = if ($DesktopPreview) { '0' } else { '1' }
+$env:POKEPORT_VR_DIAGNOSTIC = if ($Diagnostic) { '1' } else { '0' }
 $env:POKEPORT_VERSION = $RomInfo.Id
 $env:POKEPORT_IMPORT_ROM = $RomPath
 if ($BridgePath) { $env:POKEPORT_XRBRIDGE = $BridgePath }
 
 $playArguments = @('-RomPath', $RomPath)
 if ($BridgePath) { $playArguments += @('-XrBridge', $BridgePath) }
+if ($Diagnostic) { $playArguments += '-Diagnostic' }
 Write-Host "Launching the $($RomInfo.DisplayName) voxel build..." -ForegroundColor Green
 Invoke-ProjectScript $PlayScript $playArguments

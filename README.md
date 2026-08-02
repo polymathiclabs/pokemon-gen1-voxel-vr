@@ -104,6 +104,10 @@ Run these from the project root:
 
 `-DesktopPreview` exercises the VR composition without requiring a headset or native bridge. The ordinary game window is a single desktop mirror; a side-by-side SteamVR eye preview is an optional SteamVR debug view, not a requirement.
 
+VR diagnostics are hidden in normal launches. If the desktop mirror needs to
+show bridge/session state while troubleshooting, opt in explicitly with
+`./Play-VR.bat -Diagnostic -RomPath 'C:/Games/Pokemon Red.gb'`.
+
 ## Known limitations
 
 - The maintained launchers and VR bridge target Windows x64. The upstream engine contains other platform work, but this integration does not package or test those targets.
