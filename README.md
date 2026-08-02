@@ -147,8 +147,8 @@ commits used for each release, as shown in the release checklist.
 After the three repositories are checked out together, create the two release archives with:
 
 ```powershell
-./package-release.ps1 -Mode Desktop -Version v0.1.5
-./package-release.ps1 -Mode VR -Version v0.1.5 -BridgePath './xrbridge.dll'
+./package-release.ps1 -Mode Desktop -Version v0.1.6
+./package-release.ps1 -Mode VR -Version v0.1.6 -BridgePath './xrbridge.dll'
 ```
 
 The packaging script copies Git-tracked engine/mod files only and explicitly leaves out ROMs, generated ROM-derived data, saves, and local build products. It includes the root MIT license, engine license, and third-party notices. The VR package requires a matching x64 `xrbridge.dll`; it does not package SteamVR or the OpenXR runtime. Do not publish the complete VR archive until the voxel-mod redistribution permission described above is resolved.
