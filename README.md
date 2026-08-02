@@ -84,6 +84,11 @@ Run the same command for any supported game:
 
 The VR launcher identifies the ROM, prepares or reuses the matching cache, checks the native bridge and SteamVR OpenXR runtime, and then starts the voxel build. It may request one normal Windows UAC approval when selecting SteamVR as the active runtime.
 
+The VR build opens an 800x600 resizable PC mirror by default. Resize that
+window freely or set `POKEPORT_VR_MIRROR_WIDTH` and
+`POKEPORT_VR_MIRROR_HEIGHT` before launching; this only changes the desktop
+mirror, not the OpenXR eye resolution submitted to the headset.
+
 ## Controls and camera modes
 
 - Press `V` to cycle ABOVE -> 3RD -> POV.
@@ -127,7 +132,7 @@ workflow, but players do not need Git when using a release archive.
 ./install.ps1 -Mode Desktop -RomPath 'C:/Games/Pokemon Red.gb' `
   -EngineUrl 'https://github.com/polymathiclabs/gen1recomp.git' `
   -VoxelUrl 'https://github.com/polymathiclabs/DramaticShapeVoxelMod.git' `
-  -EngineRef '55bf203e5317f9598cb301a0a979aa08d02d93b2' `
+  -EngineRef '64c5a1bc7e7f1363d3f3378753edf514bb86525b' `
   -VoxelRef '05bbbdb4b413f69e24356a07f6c16d85b6a2f1e2'
 ```
 
@@ -139,8 +144,8 @@ commits used for each release, as shown in the release checklist.
 After the three repositories are checked out together, create the two release archives with:
 
 ```powershell
-./package-release.ps1 -Mode Desktop -Version v0.1.3
-./package-release.ps1 -Mode VR -Version v0.1.3 -BridgePath './xrbridge.dll'
+./package-release.ps1 -Mode Desktop -Version v0.1.4
+./package-release.ps1 -Mode VR -Version v0.1.4 -BridgePath './xrbridge.dll'
 ```
 
 The packaging script copies Git-tracked engine/mod files only and explicitly leaves out ROMs, generated ROM-derived data, saves, and local build products. It includes the root MIT license, engine license, and third-party notices. The VR package requires a matching x64 `xrbridge.dll`; it does not package SteamVR or the OpenXR runtime. Do not publish the complete VR archive until the voxel-mod redistribution permission described above is resolved.
