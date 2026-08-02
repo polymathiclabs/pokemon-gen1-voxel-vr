@@ -123,7 +123,7 @@ workflow, but players do not need Git when using a release archive.
 ./install.ps1 -Mode Desktop -RomPath 'C:/Games/Pokemon Red.gb' `
   -EngineUrl 'https://github.com/polymathiclabs/gen1recomp.git' `
   -VoxelUrl 'https://github.com/polymathiclabs/DramaticShapeVoxelMod.git' `
-  -EngineRef '3d684534ec03dfedbfe707c5a5c108ae162600cb' `
+  -EngineRef '6a573c9b956720b15f24055c4a23d974935d3716' `
   -VoxelRef 'b5559dc810c5297dcef10c439a889e28d5b5be56'
 ```
 
