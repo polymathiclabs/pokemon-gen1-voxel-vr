@@ -4,7 +4,7 @@ A Windows desktop and PC-connected headset VR project combining the [Gen1Recomp 
 
 ## Video
 
-[![Gameplay video](https://img.youtube.com/vi/mPyatutVRQ0/maxresdefault.jpg)](https://www.youtube.com/watch?v=mPyatutVRQ0)
+[![Gameplay video](https://i.ytimg.com/vi/mPyatutVRQ0/hqdefault.jpg)](https://www.youtube.com/watch?v=mPyatutVRQ0)
 
 Watch a short gameplay video of the voxel world and VR mode.
 
