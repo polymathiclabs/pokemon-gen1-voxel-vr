@@ -2,6 +2,12 @@
 
 A Windows desktop and PC-connected headset VR project combining the [Gen1Recomp engine](https://github.com/polymathiclabs/gen1recomp), the [Dramatic Shape Voxel Mod](https://github.com/polymathiclabs/DramaticShapeVoxelMod), and an optional OpenXR/SteamVR bridge.
 
+## Video
+
+[![Gameplay video](https://img.youtube.com/vi/mPyatutVRQ0/maxresdefault.jpg)](https://www.youtube.com/watch?v=mPyatutVRQ0)
+
+Watch a short gameplay video of the voxel world and VR mode.
+
 ## Downloads
 
 - [Download Desktop build](https://github.com/polymathiclabs/pokemon-gen1-voxel-vr/releases/latest/download/pokemon-gen1-voxel-desktop-latest.zip)
