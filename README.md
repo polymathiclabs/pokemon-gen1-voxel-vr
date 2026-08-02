@@ -127,7 +127,7 @@ workflow, but players do not need Git when using a release archive.
 ./install.ps1 -Mode Desktop -RomPath 'C:/Games/Pokemon Red.gb' `
   -EngineUrl 'https://github.com/polymathiclabs/gen1recomp.git' `
   -VoxelUrl 'https://github.com/polymathiclabs/DramaticShapeVoxelMod.git' `
-  -EngineRef 'c9147398c78dc9e6b8744b05ea1dcfbbdb755281' `
+  -EngineRef '55bf203e5317f9598cb301a0a979aa08d02d93b2' `
   -VoxelRef '05bbbdb4b413f69e24356a07f6c16d85b6a2f1e2'
 ```
 
@@ -139,8 +139,8 @@ commits used for each release, as shown in the release checklist.
 After the three repositories are checked out together, create the two release archives with:
 
 ```powershell
-./package-release.ps1 -Mode Desktop -Version v0.1.2
-./package-release.ps1 -Mode VR -Version v0.1.2 -BridgePath './xrbridge.dll'
+./package-release.ps1 -Mode Desktop -Version v0.1.3
+./package-release.ps1 -Mode VR -Version v0.1.3 -BridgePath './xrbridge.dll'
 ```
 
 The packaging script copies Git-tracked engine/mod files only and explicitly leaves out ROMs, generated ROM-derived data, saves, and local build products. It includes the root MIT license, engine license, and third-party notices. The VR package requires a matching x64 `xrbridge.dll`; it does not package SteamVR or the OpenXR runtime. Do not publish the complete VR archive until the voxel-mod redistribution permission described above is resolved.
