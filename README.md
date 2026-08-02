@@ -135,8 +135,8 @@ workflow, but players do not need Git when using a release archive.
 ./install.ps1 -Mode Desktop -RomPath 'C:/Games/Pokemon Red.gb' `
   -EngineUrl 'https://github.com/polymathiclabs/gen1recomp.git' `
   -VoxelUrl 'https://github.com/polymathiclabs/DramaticShapeVoxelMod.git' `
-  -EngineRef 'fd9ea35d64682bb070ae24ca6f278da0a9301c79' `
-  -VoxelRef '493defe573638e23cf609f2301b896fd61d9f23d'
+  -EngineRef 'dc6c65ae58d92d30fa311bebaf568f31a67552f7' `
+  -VoxelRef '740b28f2818608df5a7cd37abf88942aa255f6b2'
 ```
 
 Use `-Mode VR` for the headset setup. Record the exact clean nested checkout
