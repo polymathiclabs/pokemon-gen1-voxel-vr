@@ -52,6 +52,7 @@ The root launchers and `install.ps1` use those forks by default. You still need 
 
 - Press `V` to cycle ABOVE -> 3RD -> POV.
 - In POV mode, `W`/Up moves forward in the trainer's facing direction; `A`/`D` turn in place.
+- Toggle `MINIMAP` in the Dramatic Shape mod settings to show the current 2D map in the lower-left corner.
 - In VR, either thumbstick moves; right `A`/`B` are Game Boy A/B; left `X` is START; left `Y` is SELECT.
 - Click either thumbstick to recenter the seated view on the character.
 - Dialogue, menus, and battle controls appear as floating VR panels.
